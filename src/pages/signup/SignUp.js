@@ -1,18 +1,31 @@
 import { Button } from 'react-bootstrap';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 
 import classes from './SignUp.module.css';
 
 const SignUp = () => {
+    const [isLogin, setIsLogin] = useState(true);
     const emailInputRef = useRef();
     const passwordInputRef = useRef();
     const confirmPasswordRef = useRef();
+    const history = useHistory();
+
+    const switchAuthModeHandler = () => {
+        setIsLogin((prevState) => !prevState)
+    }
 
     const submitHandler = async (event) => {
         event.preventDefault();
         const enteredEmail = emailInputRef.current.value;
         const enteredPassword = passwordInputRef.current.value;
-        const response = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyC11j4nqdRXJxH7y93f47NkyPAWUKvXMNw', {
+        let url;
+        if (isLogin) {
+            url = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyC11j4nqdRXJxH7y93f47NkyPAWUKvXMNw'
+        } else {
+            url = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyC11j4nqdRXJxH7y93f47NkyPAWUKvXMNw'
+        }
+        const response = await fetch(url, {
             method: 'POST',
             body: JSON.stringify({
                 email: enteredEmail,
@@ -25,8 +38,12 @@ const SignUp = () => {
         })
         if (response.ok) {
             const data = await response.json();
+            let email = data.email.replace('@', '').replace('.', '');
+            localStorage.setItem('email', email);
+            localStorage.setItem('token', data.idToken);
             console.log(data);
-            console.log("User has successfully signed up.");
+            history.replace('/welcome');
+            // console.log("User has successfully signed up.");
         } else {
             let error = "Authentication failed";
             alert(error);
@@ -52,13 +69,19 @@ const SignUp = () => {
 
     return (
         <section className={classes.signup}>
-            <h4>SignUp</h4>
+            <h4>{isLogin ? 'Login' : 'SignUp'}</h4>
             <form onSubmit={submitHandler}>
                 <input type='email' placeholder="Email" ref={emailInputRef} required />
                 <input type='password' placeholder="password" ref={passwordInputRef} required />
                 <input type='password' placeholder="confirm password" ref={confirmPasswordRef} required />
-                <Button variant='dark' type='submit' size='md'>Sign up</Button>
+                <Button variant='dark' type='submit' size='md'>{isLogin ? 'Login' : 'Sign up'}</Button>
             </form>
+            <h6
+                className={classes.toggle}
+                onClick={switchAuthModeHandler}
+            >
+                {isLogin ? 'Create new account' : 'Already have an account? Login.'}
+            </h6>
         </section>
     )
 }
