@@ -4,8 +4,9 @@ import { useEffect } from 'react';
 
 import Header from './components/Layout/Header';
 import SignUp from './pages/signup/SignUp';
-import Welcome from './pages/welcome/Welcome';
+//import Welcome from './pages/welcome/Welcome';
 import { authActions } from './components/store/auth-slice';
+import ComposeMail from './pages/Mail/ComposeMail';
 
 function App() {
   const dispatch = useDispatch();
@@ -23,15 +24,15 @@ function App() {
     <Switch>
       <Route path='/' exact>
         {!isLogin && <Redirect to='/auth' />}
-        {isLogin && <Redirect to='/welcome' />}
+        {isLogin && <Redirect to='/mail' />}
       </Route>
       <Route path='/auth'>
         <Header />
         <SignUp />
       </Route>
-      <Route path='/welcome'>
+      <Route path='/mail'>
         <Header />
-        {isLogin && <Welcome />}
+        {isLogin && <ComposeMail />}
         {!isLogin && <Redirect to='/' />}
       </Route>
       <Route path='*'>
