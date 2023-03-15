@@ -10,12 +10,22 @@ const ViewMail = (props) => {
         dispatch(mailActions.mailHandler());
     }
 
-    const deleteMailHandler = async () =>{
-        await fetch(`https://mail-box-client-8f262-default-rtdb.firebaseio.com/inbox/${props.email}/${props.mail.id}.json`,{
+    const deleteMailHandler = async () => {
+        let url;
+        if (props.type === "received") {
+            url = `https://mail-box-client-8f262-default-rtdb.firebaseio.com/inbox/${props.email}/${props.mail.id}.json`
+        } else {
+            url = `https://mail-box-client-8f262-default-rtdb.firebaseio.com/sent/${props.email}/${props.mail.id}.json`
+        }
+        await fetch(url, {
             method: 'DELETE'
         })
-        dispatch(mailActions.deleteReceivedMail({id: props.mail.id}));
-       }
+        if (props.type === "received") {
+            dispatch(mailActions.deleteReceivedMail({ id: props.mail.id }));
+        } else {
+            dispatch(mailActions.deleteSentMail({ id: props.mail.id }))
+        }
+    }
 
     return (
         <Modal

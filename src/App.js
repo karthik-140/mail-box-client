@@ -8,6 +8,7 @@ import SignUp from './pages/signup/SignUp';
 import { authActions } from './components/store/auth-slice';
 import ComposeMail from './pages/Mail/ComposeMail';
 import Inbox from './pages/Mail/Inbox';
+import SentBox from './pages/Mail/SentBox';
 
 function App() {
   const dispatch = useDispatch();
@@ -39,6 +40,11 @@ function App() {
       <Route path='/inbox'>
         <Header />
         {isLogin && <Inbox />}
+        {!isLogin && <Redirect to='/' />}
+      </Route>
+      <Route path='/sent'>
+        <Header />
+        {isLogin && <SentBox />}
         {!isLogin && <Redirect to='/' />}
       </Route>
       <Route path='*'>

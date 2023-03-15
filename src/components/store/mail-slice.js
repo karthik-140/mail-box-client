@@ -7,6 +7,9 @@ const mailSlice = createSlice({
         updateReceiverMail(state, action) {
             state.receivedMail = action.payload.mail
         },
+        updateSentMail(state, action) {
+          state.sentMail = action.payload.mail
+        },
         viewMailHandle(state, action) {
             const newId = action.payload.id;
             const index = state.receivedMail.findIndex((mail)=> mail.id === newId);
@@ -19,6 +22,11 @@ const mailSlice = createSlice({
         deleteReceivedMail(state, action) {
             const id = action.payload.id;
             state.receivedMail = state.receivedMail.filter((mail) => mail.id !== id);
+            state.viewMail = !state.viewMail;
+        },
+        deleteSentMail(state, action) {
+            const id = action.payload.id;
+            state.sentMail = state.sentMail.filter((mail) => mail.id !== id);
             state.viewMail = !state.viewMail;
         }
     }
