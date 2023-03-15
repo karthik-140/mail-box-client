@@ -11,20 +11,22 @@ const Inbox = () => {
     const dispatch = useDispatch();
     //console.log(email);
 
-    const fetchInboxMail = async () => {
-        const response = await fetch(`https://mail-box-client-8f262-default-rtdb.firebaseio.com/inbox/${email}.json`)
-        if (!response.ok) {
-            throw new Error("Could not fetch mail");
-        } else {
-            const data = await response.json();
-            //console.log(data);
-            const newData = [];
-            for (let key in data) {
-                newData.push({ id: key, ...data[key] });
+    const fetchInboxMail = () => {
+        setInterval(async() =>{
+            const response = await fetch(`https://mail-box-client-8f262-default-rtdb.firebaseio.com/inbox/${email}.json`)
+            if (!response.ok) {
+                throw new Error("Could not fetch mail");
+            } else {
+                const data = await response.json();
+                //console.log(data);
+                const newData = [];
+                for (let key in data) {
+                    newData.push({ id: key, ...data[key] });
+                }
+                //console.log(newData);
+                dispatch(mailActions.updateReceiverMail({ mail: newData }))
             }
-            //console.log(newData);
-            dispatch(mailActions.updateReceiverMail({ mail: newData }))
-        }
+        },2000)
     }
 
     useEffect(() => {
