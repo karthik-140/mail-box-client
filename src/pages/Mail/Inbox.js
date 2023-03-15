@@ -68,7 +68,7 @@ const Inbox = () => {
                                     View
                                 </Button>
                             </td>
-                            <ViewMail message={mail.body} />
+                            <ViewMail mail={mail} email={email} />
                         </tr>
                     ))}
                 </tbody>
