@@ -27,13 +27,21 @@ const ComposeEmail = () => {
             subject: inputSubjectRef.current.value,
             body: editorState.getCurrentContent().getPlainText()
         }
-        try{
-            const response = await fetch(`https://mail-box-client-8f262-default-rtdb.firebaseio.com/${receiverEmail}.json`, {
+        const senderMailData = {
+            sentTo: receiverEmail,
+            subject: inputSubjectRef.current.value,
+            body: editorState.getCurrentContent().getPlainText()
+        }
+        try {
+            await fetch(`https://mail-box-client-8f262-default-rtdb.firebaseio.com/inbox/${receiverEmail}.json`, {
                 method: 'POST',
                 body: JSON.stringify(receiverMailData)
             })
-            console.log(response);
-        }catch(error){
+            await fetch(`https://mail-box-client-8f262-default-rtdb.firebaseio.com/sent/${email}.json`, {
+                method: 'POST',
+                body: JSON.stringify(senderMailData)
+            })
+        } catch (error) {
             alert(error);
         }
         inputMailRef.current.value = '';

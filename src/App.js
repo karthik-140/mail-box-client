@@ -7,6 +7,7 @@ import SignUp from './pages/signup/SignUp';
 //import Welcome from './pages/welcome/Welcome';
 import { authActions } from './components/store/auth-slice';
 import ComposeMail from './pages/Mail/ComposeMail';
+import Inbox from './pages/Mail/Inbox';
 
 function App() {
   const dispatch = useDispatch();
@@ -33,6 +34,11 @@ function App() {
       <Route path='/mail'>
         <Header />
         {isLogin && <ComposeMail />}
+        {!isLogin && <Redirect to='/' />}
+      </Route>
+      <Route path='/inbox'>
+        <Header />
+        {isLogin && <Inbox />}
         {!isLogin && <Redirect to='/' />}
       </Route>
       <Route path='*'>
