@@ -25,7 +25,8 @@ const ComposeEmail = () => {
         const receiverMailData = {
             sender: email,
             subject: inputSubjectRef.current.value,
-            body: editorState.getCurrentContent().getPlainText()
+            body: editorState.getCurrentContent().getPlainText(),
+            isRead: false
         }
         const senderMailData = {
             sentTo: receiverEmail,

@@ -1,8 +1,9 @@
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Table, Card } from 'react-bootstrap';
+import { Table, Card, Button } from 'react-bootstrap';
 
 import { mailActions } from "../../components/store/mail-slice";
+import ViewMail from "./ViewMail";
 
 const Inbox = () => {
     const email = useSelector(state => state.auth.email);
@@ -30,6 +31,15 @@ const Inbox = () => {
         fetchInboxMail();
     }, [])
 
+    const viewMailHandler = async (mail) =>{
+        //console.log(mail.id)
+     await fetch(`https://mail-box-client-8f262-default-rtdb.firebaseio.com/inbox/${email}/${mail.id}.json`,{
+        method: 'PUT',
+        body: JSON.stringify({...mail, isRead: true})
+     });
+     dispatch(mailActions.viewMailHandle({id: mail.id}));
+    }
+
     return (
         <Card>
             <Card.Header style={{ padding: '20px' }}>
@@ -38,6 +48,7 @@ const Inbox = () => {
             <Table striped bordered hover>
                 <thead>
                     <tr>
+                        <th></th>
                         <th>Subject</th>
                         <th>Content</th>
                         <th>Sender</th>
@@ -46,9 +57,18 @@ const Inbox = () => {
                 <tbody>
                     {receivedEmail.map((mail) => (
                         <tr key={mail.id}>
+                            <td style={{ color: "blue", fontSize: "40px", textAlign: 'center' }}>
+                                {!mail.isRead && "."}
+                            </td>
                             <td>{mail.subject}</td>
                             <td>{mail.body}</td>
                             <td>{mail.sender}</td>
+                            <td>
+                                <Button variant="success" onClick={() => viewMailHandler(mail)}>
+                                    View
+                                </Button>
+                            </td>
+                            <ViewMail message={mail.body} />
                         </tr>
                     ))}
                 </tbody>
