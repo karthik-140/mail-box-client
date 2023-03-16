@@ -4,35 +4,51 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { mailActions } from '../../components/store/mail-slice';
 import ViewMail from './ViewMail';
+import useHttp from '../../hooks/use-http';
 
 const SentBox = () =>{
     const {sentMail} = useSelector(state => state.mail)
     const email = useSelector(state => state.auth.email);
     const dispatch = useDispatch();
+    const {sendRequest} = useHttp();
 
     const viewMailHandler = () =>{
         dispatch(mailActions.mailHandler())
     }
 
-    const fetchInboxMail = async () => {
-        const response = await fetch(`https://mail-box-client-8f262-default-rtdb.firebaseio.com/sent/${email}.json`)
-        if (!response.ok) {
-            throw new Error("Could not fetch mail");
-        } else {
-            const data = await response.json();
-            //console.log(data);
-            const newData = [];
-            for (let key in data) {
-                newData.push({ id: key, ...data[key] });
-            }
-            //console.log(newData);
-            dispatch(mailActions.updateSentMail({ mail: newData }))
-        }
-    }
+    // const fetchInboxMail = async () => {
+    //     const response = await fetch(`https://mail-box-client-8f262-default-rtdb.firebaseio.com/sent/${email}.json`)
+    //     if (!response.ok) {
+    //         throw new Error("Could not fetch mail");
+    //     } else {
+    //         const data = await response.json();
+    //         //console.log(data);
+    //         const newData = [];
+    //         for (let key in data) {
+    //             newData.push({ id: key, ...data[key] });
+    //         }
+    //         //console.log(newData);
+    //         dispatch(mailActions.updateSentMail({ mail: newData }))
+    //     }
+    // }
 
-    useEffect(() => {
-        fetchInboxMail();
-    }, [])
+    // useEffect(() => {
+    //     fetchInboxMail();
+    // }, [])
+
+    useEffect(() =>{
+        const transformData = (data) =>{
+            const newData = [];
+            for(let key in data){
+                newData.push({id: key, ...data[key]})
+            }
+            dispatch(mailActions.updateSentMail({mail: newData}))
+        };
+        sendRequest({
+            url: `https://mail-box-client-8f262-default-rtdb.firebaseio.com/sent/${email}.json`,
+        }, transformData)
+    }, [dispatch, email, sendRequest])
+    
 
     return (
         <Card>

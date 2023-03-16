@@ -8,18 +8,20 @@ import Form from "react-bootstrap/Form";
 import { Editor } from "react-draft-wysiwyg";
 import { EditorState } from 'draft-js';
 import { useSelector } from "react-redux";
+import useHttp from "../../hooks/use-http";
 
 const ComposeEmail = () => {
     const [editorState, setEditorState] = useState(() => EditorState.createEmpty())
     const email = useSelector(state => state.auth.email)
     const inputMailRef = useRef()
     const inputSubjectRef = useRef();
+    const {sendRequest} = useHttp();
 
     const editorHandler = (editorState) => {
         setEditorState(editorState)
     }
 
-    const composeMailHandler = async (event) => {
+    const composeMailHandler = (event) => {
         event.preventDefault();
         const receiverEmail = inputMailRef.current.value.replace('@', '').replace('.', '');
         const receiverMailData = {
@@ -33,18 +35,28 @@ const ComposeEmail = () => {
             subject: inputSubjectRef.current.value,
             body: editorState.getCurrentContent().getPlainText()
         }
-        try {
-            await fetch(`https://mail-box-client-8f262-default-rtdb.firebaseio.com/inbox/${receiverEmail}.json`, {
-                method: 'POST',
-                body: JSON.stringify(receiverMailData)
-            })
-            await fetch(`https://mail-box-client-8f262-default-rtdb.firebaseio.com/sent/${email}.json`, {
-                method: 'POST',
-                body: JSON.stringify(senderMailData)
-            })
-        } catch (error) {
-            alert(error);
-        }
+        // try {
+        //     await fetch(`https://mail-box-client-8f262-default-rtdb.firebaseio.com/inbox/${receiverEmail}.json`, {
+        //         method: 'POST',
+        //         body: JSON.stringify(receiverMailData)
+        //     })
+        //     await fetch(`https://mail-box-client-8f262-default-rtdb.firebaseio.com/sent/${email}.json`, {
+        //         method: 'POST',
+        //         body: JSON.stringify(senderMailData)
+        //     })
+        // } catch (error) {
+        //     alert(error);
+        // }
+        sendRequest({
+            url: `https://mail-box-client-8f262-default-rtdb.firebaseio.com/inbox/${receiverEmail}.json`,
+            method: 'POST',
+            body: receiverMailData
+        });
+        sendRequest({
+            url: `https://mail-box-client-8f262-default-rtdb.firebaseio.com/sent/${email}.json`,
+            method: 'POST',
+            body: senderMailData
+        })
         inputMailRef.current.value = '';
         inputSubjectRef.current.value = '';
         setEditorState(null);

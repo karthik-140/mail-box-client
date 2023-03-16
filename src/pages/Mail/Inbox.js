@@ -4,43 +4,69 @@ import { Table, Card, Button } from 'react-bootstrap';
 
 import { mailActions } from "../../components/store/mail-slice";
 import ViewMail from "./ViewMail";
+import useHttp from "../../hooks/use-http";
 
 const Inbox = () => {
     const email = useSelector(state => state.auth.email);
     const receivedEmail = useSelector(state => state.mail.receivedMail)
     const dispatch = useDispatch();
+    const { sendRequest } = useHttp();
     //console.log(email);
 
-    const fetchInboxMail = () => {
-        setInterval(async() =>{
-            const response = await fetch(`https://mail-box-client-8f262-default-rtdb.firebaseio.com/inbox/${email}.json`)
-            if (!response.ok) {
-                throw new Error("Could not fetch mail");
-            } else {
-                const data = await response.json();
-                //console.log(data);
-                const newData = [];
-                for (let key in data) {
-                    newData.push({ id: key, ...data[key] });
-                }
-                //console.log(newData);
-                dispatch(mailActions.updateReceiverMail({ mail: newData }))
-            }
-        },2000)
+    // const fetchInboxMail = () => {
+    //     setInterval(async() =>{
+    //         const response = await fetch(`https://mail-box-client-8f262-default-rtdb.firebaseio.com/inbox/${email}.json`)
+    //         if (!response.ok) {
+    //             throw new Error("Could not fetch mail");
+    //         } else {
+    //             const data = await response.json();
+    //             //console.log(data);
+    //             const newData = [];
+    //             for (let key in data) {
+    //                 newData.push({ id: key, ...data[key] });
+    //             }
+    //             //console.log(newData);
+    //             dispatch(mailActions.updateReceiverMail({ mail: newData }))
+    //         }
+    //     },2000)
+    // }
+
+    // useEffect(() => {
+    //     fetchInboxMail();
+    // }, [])
+
+    // const viewMailHandler = async (mail) =>{
+    //     //console.log(mail.id)
+    //  await fetch(`https://mail-box-client-8f262-default-rtdb.firebaseio.com/inbox/${email}/${mail.id}.json`,{
+    //     method: 'PUT',
+    //     body: JSON.stringify({...mail, isRead: true})
+    //  });
+    //  dispatch(mailActions.viewMailHandle({id: mail.id}));
+    // }
+    const viewMailHandler = (mail) => {
+        sendRequest({
+            url: `https://mail-box-client-8f262-default-rtdb.firebaseio.com/inbox/${email}/${mail.id}.json`,
+            method: 'PUT',
+            body: { ...mail, isRead: true }
+        });
+        dispatch(mailActions.viewMailHandle({ id: mail.id }));
     }
 
     useEffect(() => {
-        fetchInboxMail();
-    }, [])
-
-    const viewMailHandler = async (mail) =>{
-        //console.log(mail.id)
-     await fetch(`https://mail-box-client-8f262-default-rtdb.firebaseio.com/inbox/${email}/${mail.id}.json`,{
-        method: 'PUT',
-        body: JSON.stringify({...mail, isRead: true})
-     });
-     dispatch(mailActions.viewMailHandle({id: mail.id}));
-    }
+        const transformData = (data) => {
+            const newData = [];
+            for (let key in data) {
+                newData.push({ id: key, ...data[key] });
+            }
+            dispatch(mailActions.updateReceiverMail({ mail: newData }))
+        };
+        sendRequest(
+            {
+                url: `https://mail-box-client-8f262-default-rtdb.firebaseio.com/inbox/${email}.json`,
+            },
+            transformData
+        );
+    }, [sendRequest, dispatch, email])
 
     return (
         <Card>
