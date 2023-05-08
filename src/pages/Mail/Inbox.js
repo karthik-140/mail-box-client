@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Table, Card, Button } from 'react-bootstrap';
 
@@ -49,7 +49,7 @@ const Inbox = () => {
             method: 'PUT',
             body: { ...mail, isRead: true }
         });
-        dispatch(mailActions.viewMailHandle({ id: mail.id }));
+        dispatch(mailActions.viewMailHandle({ id: mail.id, mail: {...mail} }));
     }
 
     useEffect(() => {
@@ -97,6 +97,7 @@ const Inbox = () => {
                                 </Button>
                             </td>
                             <ViewMail mail={mail} email={email} type={"received"} />
+                            {console.log(mail)}
                         </tr>
                     ))}
                 </tbody>
@@ -105,4 +106,4 @@ const Inbox = () => {
     )
 }
 
-export default Inbox;
+export default React.memo(Inbox);

@@ -12,8 +12,9 @@ const SentBox = () =>{
     const dispatch = useDispatch();
     const {sendRequest} = useHttp();
 
-    const viewMailHandler = () =>{
-        dispatch(mailActions.mailHandler())
+    const viewMailHandler = (mail) =>{
+        dispatch(mailActions.mailHandler());
+        dispatch(mailActions.viewSentMail({mail: {...mail}}));
     }
 
     // const fetchInboxMail = async () => {
@@ -70,7 +71,7 @@ const SentBox = () =>{
                             <td>{mail.body}</td>
                             <td>{mail.sentTo}</td>
                             <td>
-                                <Button variant="success" onClick={viewMailHandler}>
+                                <Button variant="success" onClick={() => viewMailHandler(mail)}>
                                     View
                                 </Button>
                             </td>
