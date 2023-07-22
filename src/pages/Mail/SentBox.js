@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import {Table, Card, Button} from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { mailActions } from '../../components/store/mail-slice';
+import { mailActions } from '../../store/mail-slice';
 import ViewMail from './ViewMail';
 import useHttp from '../../hooks/use-http';
 
@@ -56,7 +56,8 @@ const SentBox = () =>{
             <Card.Header style={{ padding: '20px' }}>
                 <strong>Sent</strong>
             </Card.Header>
-            <Table striped bordered hover>
+            {sentMail.length === 0 && <h1>No mails to show</h1>}
+            {sentMail.length > 0 && <Table responsive striped bordered hover>
                 <thead>
                     <tr>
                         <th>Subject</th>
@@ -79,7 +80,7 @@ const SentBox = () =>{
                         </tr>
                     ))}
                 </tbody>
-            </Table>
+            </Table>}
         </Card>
     )
 }

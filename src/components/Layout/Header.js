@@ -1,6 +1,6 @@
 import { Navbar, Container, Button } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
-import { authActions } from "../store/auth-slice";
+import { authActions } from "../../store/auth-slice";
 import { useHistory, Link } from "react-router-dom";
 import classes from './Header.module.css';
 

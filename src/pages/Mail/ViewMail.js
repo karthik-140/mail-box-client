@@ -1,6 +1,6 @@
 import { Modal, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { mailActions } from "../../components/store/mail-slice";
+import { mailActions } from "../../store/mail-slice";
 import useHttp from "../../hooks/use-http";
 
 const ViewMail = (props) => {

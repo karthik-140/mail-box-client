@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Table, Card, Button } from 'react-bootstrap';
 
-import { mailActions } from "../../components/store/mail-slice";
+import { mailActions } from "../../store/mail-slice";
 import ViewMail from "./ViewMail";
 import useHttp from "../../hooks/use-http";
 
@@ -73,7 +73,8 @@ const Inbox = () => {
             <Card.Header style={{ padding: '20px' }}>
                 <strong>Inbox</strong>
             </Card.Header>
-            <Table striped bordered hover>
+            {receivedEmail.length === 0 && <h1>No mails to show</h1>}
+            {receivedEmail.length > 0 && <Table responsive striped bordered hover>
                 <thead>
                     <tr>
                         <th></th>
@@ -101,7 +102,7 @@ const Inbox = () => {
                         </tr>
                     ))}
                 </tbody>
-            </Table>
+            </Table>}
         </Card>
     )
 }

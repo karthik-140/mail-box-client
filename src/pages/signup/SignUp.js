@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
 import classes from './SignUp.module.css';
-import { authActions } from '../../components/store/auth-slice';
+import { authActions } from '../../store/auth-slice';
 
 const SignUp = () => {
     const [isLogin, setIsLogin] = useState(true);

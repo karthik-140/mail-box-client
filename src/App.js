@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 import Header from './components/Layout/Header';
 import SignUp from './pages/signup/SignUp';
 //import Welcome from './pages/welcome/Welcome';
-import { authActions } from './components/store/auth-slice';
+import { authActions } from './store/auth-slice';
 import ComposeMail from './pages/Mail/ComposeMail';
 import Inbox from './pages/Mail/Inbox';
 import SentBox from './pages/Mail/SentBox';
